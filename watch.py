@@ -31,7 +31,7 @@ def action():
 if __name__=='__main__':
     ev=EventHandler()
     observer=Observer()
-    observer.schedule(ev, os.getcwd(), recursive=False)
+    observer.schedule(ev, os.getcwd(), recursive=True)
     observer.start()
     print('Watching...')
     print(time.time())
