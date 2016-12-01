@@ -1,13 +1,15 @@
 #conding=utf8
 import os
 import time
+import re
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from watchdog.events import FileSystemEventHandler
 
 global cacheTime
+global replace_reg
 cacheTime=0
-
+replace_reg = re.compile(r'^###')
 class EventHandler(FileSystemEventHandler):
     def __init__(self):
         FileSystemEventHandler.__init__(self)
@@ -22,7 +24,13 @@ class EventHandler(FileSystemEventHandler):
 def action(data):
     global cacheTime
     if int(time.time())-int(cacheTime)>2:
-        print(data.src_path)
+        try:
+            lines=open(data.src_path,'r').readlines()
+            flen=len(lines)-1
+            for i in range(flen):
+                if sstr in lines[i]:
+                    lines[i]=lines[i].replace(sstr,rstr)
+            open(data.src_path,'w').writelines(lines)
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
