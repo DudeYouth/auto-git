@@ -3,12 +3,14 @@ import os
 import time
 import re
 import argparse
+import threading
 import fileinput
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from watchdog.events import FileSystemEventHandler
 
 global cacheTime
+global replace_reg
 global sign
 cacheTime=0
 parser=argparse.ArgumentParser()
@@ -28,10 +30,12 @@ class EventHandler(FileSystemEventHandler):
         action(data)
 def action(data):
     global cacheTime
+    global replace_reg
     global sign
     if int(time.time())-int(cacheTime)>2:
         commit=replaceStr(data)
         time.sleep(1)
+        threading.Thread(target=gitcommit,args=(commit))
         os.system('git pull origin master')
         os.system('git add .')
         os.system('git commit -m"'+commit.replace(sign,'')+'"')
@@ -48,6 +52,11 @@ def replaceStr(data):
         else:
             print(line)
     return strings
+def gitcommit(commit):
+    os.system('git pull origin master')
+    os.system('git add .')
+    os.system('git commit -m"'+commit.replace(sign,'')+'"')
+    os.system('git push origin master')
 if __name__=='__main__':
     ev=EventHandler()
     observer=Observer()
