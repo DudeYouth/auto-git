@@ -8,15 +8,20 @@ import fileinput
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from watchdog.events import FileSystemEventHandler
-
 global cacheTime
-global replace_reg
-global sign
 cacheTime=0
 parser=argparse.ArgumentParser()
 parser.add_argument('-s',type=str,help='commit的版本号标记字符，默认“:::”',default=':::')
 args = parser.parse_args()
 sign=args.s;
+def gitCommit(commit,test):
+    try:
+        os.system('git pull origin master')
+        os.system('git add .')
+        os.system('git commit -m"'+commit.replace(sign,'')+'"')
+        os.system('git push origin master')
+    except:
+        print("push失败！")
 class EventHandler(FileSystemEventHandler):
     def __init__(self):
         FileSystemEventHandler.__init__(self)
@@ -30,19 +35,13 @@ class EventHandler(FileSystemEventHandler):
         action(data)
 def action(data):
     global cacheTime
-    global replace_reg
-    global sign
     if int(time.time())-int(cacheTime)>2:
         commit=replaceStr(data)
         time.sleep(1)
-        threading.Thread(target=gitcommit,args=(commit))
-        os.system('git pull origin master')
-        os.system('git add .')
-        os.system('git commit -m"'+commit.replace(sign,'')+'"')
-        os.system('git push origin master')
+        th=threading.Thread(target=gitCommit,args=(commit,123))
+        th.start();
         cacheTime=time.time()
 def replaceStr(data):
-    global sign
     strings=str(time.time())
     for line in fileinput.input(data.src_path,inplace=1):
         strs=line.replace(sign,'');
@@ -52,11 +51,6 @@ def replaceStr(data):
         else:
             print(line)
     return strings
-def gitcommit(commit):
-    os.system('git pull origin master')
-    os.system('git add .')
-    os.system('git commit -m"'+commit.replace(sign,'')+'"')
-    os.system('git push origin master')
 if __name__=='__main__':
     ev=EventHandler()
     observer=Observer()
