@@ -16,6 +16,7 @@ class EventHandler(FileSystemEventHandler):
     def on_deleted(self,data):
         action()
     def on_modified(self,data):
+        print(data)
         action()
     def on_moved(self,data):
         action()
