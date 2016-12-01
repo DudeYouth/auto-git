@@ -12,17 +12,17 @@ class EventHandler(FileSystemEventHandler):
     def __init__(self):
         FileSystemEventHandler.__init__(self)
     def on_created(self,data):
-        action()
+        action(data)
     def on_deleted(self,data):
-        action()
+        action(data)
     def on_modified(self,data):
-        print(data)
-        action()
+        action(data)
     def on_moved(self,data):
-        action()
-def action():
+        action(data)
+def action(data):
     global cacheTime
     if int(time.time())-int(cacheTime)>2:
+        print(data)
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
