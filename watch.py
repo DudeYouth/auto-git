@@ -1,4 +1,4 @@
-#conding=utf8
+#conding=UTF-8
 import os
 import time
 import re
@@ -9,7 +9,7 @@ from watchdog.events import FileSystemEventHandler
 global cacheTime
 global replace_reg
 cacheTime=0
-replace_reg = re.compile(r'^###')
+sign="###"
 class EventHandler(FileSystemEventHandler):
     def __init__(self):
         FileSystemEventHandler.__init__(self)
@@ -24,21 +24,22 @@ class EventHandler(FileSystemEventHandler):
 def action(data):
     global cacheTime
     global replace_reg
+    commit=""
     if int(time.time())-int(cacheTime)>2:
         try:
             lines=open(data.src_path,'r').readlines()
             flen=len(lines)-1
-            for i in range(flen):
-                sstr=''
-                if sstr in lines[i]:
-                    lines[i]=replace_reg.sub('',sstr)
+            for i in range(flen):    
+                if lines[i].find(sign)!=-1:
+                    commit=lines[i]
+                    lines[i]=""
             open(data.src_path,'w').writelines(lines)
         except:
             pass
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
-        os.system('git commit -m"test"')
+        os.system('git commit -m"'+commit.replace(sign,'')+'"')
         os.system('git push origin master')
         cacheTime=time.time()
 if __name__=='__main__':
@@ -46,8 +47,6 @@ if __name__=='__main__':
     observer=Observer()
     observer.schedule(ev, os.getcwd(), recursive=True)
     observer.start()
-    print('Watching...')
-    print(time.time())
     try:
         while True:
             time.sleep(1)
