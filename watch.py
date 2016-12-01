@@ -30,22 +30,25 @@ def action(data):
     global replace_reg
     commit=int(time.time())
     if commit-int(cacheTime)>2:
-        try:
-            lines=open(data.src_path,'r').readlines()
-            flen=len(lines)-1
-            for i in range(flen):    
-                if lines[i].find(sign)!=-1:
-                    commit=lines[i]
-                    lines[i]=""
-            open(data.src_path,'w').writelines(lines)
-        except:
-            print('找不到版本提示！将使用默认提示')
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
         os.system('git commit -m"'+str(commit).replace(sign,'')+'"')
         os.system('git push origin master')
         cacheTime=time.time()
+def replaceStr():
+    try:
+        f=open(data.src_path,'r+')
+        lines=f.readlines()
+        flen=len(lines)-1
+        for i in range(flen):    
+            if lines[i].find(sign)!=-1:
+                commit=lines[i]
+                lines[i]=""
+                f.writelines(lines)
+        f.close()
+    except:
+        print('找不到版本提示！将使用默认提示')
 if __name__=='__main__':
     ev=EventHandler()
     observer=Observer()
