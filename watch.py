@@ -2,6 +2,7 @@
 import os
 import time
 import re
+import argparse
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from watchdog.events import FileSystemEventHandler
@@ -36,7 +37,6 @@ def action(data):
             open(data.src_path,'w').writelines(lines)
         except:
             print('撤销提示失败！')
-        print(commit.replace(sign,''))
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
