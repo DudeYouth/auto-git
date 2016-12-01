@@ -21,8 +21,7 @@ class EventHandler(FileSystemEventHandler):
         action()
 def action():
     global cacheTime
-    print(time.time(),cacheTime)
-    if int(time.time())-cacheTime>2000:
+    if int(time.time())-int(cacheTime)>2:
         os.system('git pull origin master')
         os.system('git add .')
         os.system('git commit -m"test"')
