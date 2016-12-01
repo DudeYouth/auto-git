@@ -11,7 +11,7 @@ global cacheTime
 global replace_reg
 cacheTime=0
 parser=argparse.ArgumentParser()
-parser.add_argument('-s',type=str,help='commit的版本号标记字符，默认“###”',default='###')
+parser.add_argument('-s',type=str,help='commit的版本号标记字符，默认“:::”',default=':::')
 args = parser.parse_args()
 sign=args.s;
 class EventHandler(FileSystemEventHandler):
