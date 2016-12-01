@@ -28,8 +28,8 @@ class EventHandler(FileSystemEventHandler):
 def action(data):
     global cacheTime
     global replace_reg
-    commit=""
-    if int(time.time())-int(cacheTime)>2:
+    commit=int(time.time())
+    if commit-int(cacheTime)>2:
         try:
             lines=open(data.src_path,'r').readlines()
             flen=len(lines)-1
@@ -39,11 +39,11 @@ def action(data):
                     lines[i]=""
             open(data.src_path,'w').writelines(lines)
         except:
-            print('撤销提示失败！')
+            print('找不到版本提示！将使用默认提示')
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
-        os.system('git commit -m"'+commit.replace(sign,'')+'"')
+        os.system('git commit -m"'+str(commit).replace(sign,'')+'"')
         os.system('git push origin master')
         cacheTime=time.time()
 if __name__=='__main__':
