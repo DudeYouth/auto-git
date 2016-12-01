@@ -22,7 +22,7 @@ class EventHandler(FileSystemEventHandler):
 def action(data):
     global cacheTime
     if int(time.time())-int(cacheTime)>2:
-        print(data)
+        print(data.src_path)
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
