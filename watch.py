@@ -33,6 +33,7 @@ def action(data):
     global sign
     if int(time.time())-int(cacheTime)>2:
         commit=replaceStr(data)
+        print(commit)
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
