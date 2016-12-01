@@ -9,7 +9,6 @@ from watchdog.events import LoggingEventHandler
 from watchdog.events import FileSystemEventHandler
 
 global cacheTime
-global replace_reg
 global sign
 cacheTime=0
 parser=argparse.ArgumentParser()
@@ -29,7 +28,6 @@ class EventHandler(FileSystemEventHandler):
         action(data)
 def action(data):
     global cacheTime
-    global replace_reg
     global sign
     if int(time.time())-int(cacheTime)>2:
         commit=replaceStr(data)
