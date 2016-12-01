@@ -1,4 +1,4 @@
-#conding=UTF-8
+#conding:utf-8
 import os
 import time
 import re
@@ -35,7 +35,7 @@ def action(data):
                     lines[i]=""
             open(data.src_path,'w').writelines(lines)
         except:
-            pass
+            print('撤销提示失败！')
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
