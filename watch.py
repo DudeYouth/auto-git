@@ -23,14 +23,18 @@ class EventHandler(FileSystemEventHandler):
         action(data)
 def action(data):
     global cacheTime
+    global replace_reg
     if int(time.time())-int(cacheTime)>2:
         try:
             lines=open(data.src_path,'r').readlines()
             flen=len(lines)-1
             for i in range(flen):
+                sstr=''
                 if sstr in lines[i]:
-                    lines[i]=lines[i].replace(sstr,rstr)
+                    lines[i]=replace_reg.sub('',sstr)
             open(data.src_path,'w').writelines(lines)
+        except:
+            pass
         time.sleep(1)
         os.system('git pull origin master')
         os.system('git add .')
