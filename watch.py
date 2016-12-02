@@ -11,6 +11,7 @@ from watchdog.events import FileSystemEventHandler
 global cacheTime
 cacheTime=0
 parser=argparse.ArgumentParser()
+lock=threading.Lock();
 parser.add_argument('-s',type=str,help='commit的版本号标记字符，默认“:::”',default=':::')
 args = parser.parse_args()
 sign=args.s;
@@ -42,15 +43,22 @@ def action(data):
         th.start();
         cacheTime=time.time()
 def replaceStr(data):
-    strings=str(time.time())
-    for line in fileinput.input(data.src_path,inplace=1):
-        strs=line.replace(sign,'');
-        if(line!=strs):
-            strings=strs
-            print('')
-        else:
-            print(line)
-    return strings
+    try:
+        strings=str(time.time())
+        lock.acquire();
+        for line in fileinput.input(data.src_path,inplace=1,backup=''):
+            strs=line.replace(sign,'');
+            if(line!=strs):
+                strings=strs
+                print('')
+            else:
+                print(line)
+        fileinput.close()
+    except:
+        print("检测失败")
+    finally:
+        lock.release();
+        return strings
 if __name__=='__main__':
     ev=EventHandler()
     observer=Observer()
