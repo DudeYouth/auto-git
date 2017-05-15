@@ -22,7 +22,7 @@ def gitCommit(commit):
         os.system('git commit -m"'+commit.replace(sign,'')+'"')
         os.system('git push origin master')
     except:
-        print("push失败！")
+        print("push失败！ ")
 class EventHandler(FileSystemEventHandler):
     def __init__(self):
         FileSystemEventHandler.__init__(self)
